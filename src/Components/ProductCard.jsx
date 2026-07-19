@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Plus, Minus, ShoppingBag } from "lucide-react";
 import { useCart } from "./CartContext";
+// Import your placeholder image
+import productPlaceholder from "../assets/mobileslide1.jpeg";
 
 const ProductCard = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
@@ -10,9 +12,13 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="w-full bg-white p-4 border-r border-b border-slate-200 hover:bg-slate-50 transition-colors flex flex-col">
-      {/* Product Image */}
-      <div className="w-full aspect-square bg-slate-100 rounded-lg mb-4 flex items-center justify-center">
-        <span className="text-slate-400 text-sm">Image</span>
+      {/* Product Image - Updated with imported image */}
+      <div className="w-full aspect-square bg-slate-100 rounded-lg mb-4 overflow-hidden">
+        <img
+          src={productPlaceholder}
+          alt={product.name}
+          className="w-full h-full object-cover"
+        />
       </div>
 
       <h3 className="font-bold text-brand-black text-base mb-2 truncate">
