@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Plus, Minus, ShoppingBag } from "lucide-react";
+import { Link } from "react-router-dom"; // 1. Import Link
 import { useCart } from "./CartContext";
-// Import your placeholder image
-import productPlaceholder from "../assets/mobileslide1.jpeg";
+import productPlaceholder from "../assets/slide1.jpeg";
 
 const ProductCard = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
@@ -11,19 +11,21 @@ const ProductCard = ({ product }) => {
   const colors = ["bg-blue-600", "bg-slate-800", "bg-orange-500"];
 
   return (
-    <div className="w-full bg-white p-4 border-r border-b border-slate-200 hover:bg-slate-50 transition-colors flex flex-col">
-      {/* Product Image - Updated with imported image */}
-      <div className="w-full aspect-square bg-slate-100 rounded-lg mb-4 overflow-hidden">
-        <img
-          src={productPlaceholder}
-          alt={product.name}
-          className="w-full h-full object-cover"
-        />
-      </div>
+    <div className="w-full bg-white p-4 border border-slate-100 hover:shadow-lg transition-all duration-300 rounded-3xl flex flex-col">
+      {/* 2. Wrap the image and title in Link */}
+      <Link to={`/product/${product.id}`} className="block flex-1">
+        <div className="w-full aspect-square bg-slate-50 rounded-2xl mb-4 overflow-hidden">
+          <img
+            src={productPlaceholder}
+            alt={product.name}
+            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+          />
+        </div>
 
-      <h3 className="font-bold text-brand-black text-base mb-2 truncate">
-        {product.name}
-      </h3>
+        <h3 className="font-bold text-brand-black text-base mb-2 truncate">
+          {product.name}
+        </h3>
+      </Link>
 
       <div className="flex flex-wrap items-center gap-2 mb-4">
         <span className="text-slate-400 line-through text-xs md:text-sm">
@@ -38,38 +40,39 @@ const ProductCard = ({ product }) => {
         {colors.map((color, idx) => (
           <button
             key={idx}
-            className={`w-5 h-5 md:w-6 md:h-6 rounded-full ${color} border-2 border-white ring-1 ring-slate-200`}
+            className={`w-5 h-5 rounded-full ${color} border-2 border-white ring-1 ring-slate-200`}
           />
         ))}
       </div>
 
-      <div className="flex items-center justify-between mt-auto">
-        {/* Quantity Selector */}
-        <div className="flex items-center gap-2 md:gap-3 border border-slate-200 rounded-full px-2 py-1">
+      <div className="flex items-center justify-between mt-auto z-10">
+        <div className="flex items-center gap-2 border border-slate-200 rounded-full px-2 py-1">
           <button
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            className="text-slate-500 hover:text-brand-blue transition"
+            className="text-slate-500 hover:text-brand-blue"
           >
-            <Minus className="w-3 h-3 md:w-4 md:h-4" />
+            <Minus className="w-4 h-4" />
           </button>
-          <span className="font-semibold text-brand-black w-4 md:w-6 text-center text-sm">
+          <span className="font-semibold text-brand-black w-6 text-center text-sm">
             {quantity}
           </span>
           <button
             onClick={() => setQuantity((q) => q + 1)}
-            className="text-slate-500 hover:text-brand-blue transition"
+            className="text-slate-500 hover:text-brand-blue"
           >
-            <Plus className="w-3 h-3 md:w-4 md:h-4" />
+            <Plus className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Add to Cart Button */}
         <button
-          onClick={() => addToCart(product, quantity)}
-          className="relative bg-brand-orange text-white p-2 md:p-3 rounded-full hover:bg-orange-600 transition shadow-sm"
+          onClick={(e) => {
+            e.preventDefault(); // Prevent navigating when clicking cart
+            addToCart(product, quantity);
+          }}
+          className="relative bg-brand-orange text-white p-3 rounded-full hover:bg-orange-600 transition shadow-sm"
         >
-          <ShoppingBag className="w-4 h-4 md:w-5 md:h-5" />
-          <Plus className="w-2.5 h-2.5 md:w-3 md:h-3 absolute top-1.5 right-1 md:top-2 md:right-1.5 bg-brand-orange rounded-full" />
+          <ShoppingBag className="w-5 h-5" />
+          <Plus className="w-3 h-3 absolute top-2 right-1.5 bg-brand-orange rounded-full border border-white" />
         </button>
       </div>
     </div>
