@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@import "tailwindcss";
+
+@theme {
+  /* Define your brand colors here */
+  --color-brand-blue: #007ace;
+  --color-brand-orange: #f97316;
+  --color-brand-white: #ffffff;
+  --color-brand-black: #0f172a; /* Slate 900 for a softer modern black */
+}
+
+/* index.css */
+body {
+  /* This prevents the "jumping" of elements when the mobile URL bar collapses */
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* Force the fixed element to ignore mobile browser UI changes */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* Fallback for mobile height issues */
+  height: 80px; 
+}
