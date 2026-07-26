@@ -2,22 +2,22 @@ import React from "react";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import Home from "./Pages/Home";
 import ProductDetails from "./Pages/ProductDetails";
+import Login from "./Pages/Login";
 import CartDrawer from "./Components/CartDrawer";
-import Navbar from "./Components/Navbar";
-import Footer from "./Components/Footer";
+import Register from "./Pages/Register";
 
 const App = () => {
   return (
     <>
-      <BrowserRouter >
-      <Navbar />
-      <Routes>
-        <Route path="/Gadget-Store" element={<Home />} />
-        <Route path="/product/:id" element={<ProductDetails />} />
-      </Routes>
+      <BrowserRouter basename="/Gadget-Store">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Register />} />
+        </Routes>
 
-      <CartDrawer />
-      <Footer />
+        <CartDrawer />
       </BrowserRouter>
     </>
   );

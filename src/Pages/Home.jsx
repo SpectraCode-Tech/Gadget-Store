@@ -3,15 +3,19 @@ import Hero from '../Components/Hero';
 import Categories from '../Components/Categories';
 import HomeAdBanner from '../Components/HomeAdBanner';
 import PopularProducts from '../Components/PopularProducts';
+import Navbar from '../Components/Navbar';
+import Footer from '../Components/Footer';
 
 const Home = () => {
   return (
-    <div>
+    <>
+    <Navbar />
       <Hero />
       <Categories />
       <HomeAdBanner />
       <PopularProducts />
-    </div>
+    <Footer />
+    </>
   )
 }
 

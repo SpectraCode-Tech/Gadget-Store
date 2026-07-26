@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ShoppingBag, Menu, X, User } from "lucide-react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useCart } from "./CartContext";
 
 const Navbar = () => {
@@ -9,7 +9,8 @@ const Navbar = () => {
   const { cart, toggleCart } = useCart();
 
   const location = useLocation();
-  const isHome = location.pathname === "/Gadget-Store";
+  const navigate = useNavigate();
+  const isHome = location.pathname === "/" || location.pathname === "";
 
   const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -26,13 +27,13 @@ const Navbar = () => {
         isHome
           ? `fixed top-0 left-0 ${
               scrolled
-                ? "bg-white shadow-md text-brand-black"
+                ? "bg-white/95 backdrop-blur-md shadow-md text-brand-black"
                 : "bg-transparent text-brand-black"
             }`
-          : "static bg-white border-b border-slate-100 text-brand-black shadow-sm"
+          : "sticky top-0 bg-white border-b border-slate-100 text-brand-black shadow-sm"
       }`}
     >
-      <div className="text-2xl font-bold tracking-tight z-[60]">
+      <div className="text-2xl font-bold tracking-tight z-60">
         <Link to="/">Sentinel.</Link>
       </div>
 
@@ -40,7 +41,7 @@ const Navbar = () => {
         {["Home", "Phones", "About", "Contact"].map((link) => (
           <Link
             key={link}
-            to={link === "Home" ? "/Gadget-Store" : "#"}
+            to={link === "Home" ? "/" : "#"}
             className="hover:text-brand-orange transition"
           >
             {link}
@@ -48,15 +49,18 @@ const Navbar = () => {
         ))}
       </div>
 
-      <div className="flex items-center gap-2 md:gap-4 z-[60]">
-        <button className="flex items-center gap-2 p-2 hover:scale-105 transition-transform">
+      <div className="flex items-center gap-2 md:gap-4 z-60">
+        <button
+          onClick={() => navigate("/login")}
+          className="flex items-center gap-2 cursor-pointer p-2 hover:scale-105 transition-transform"
+        >
           <User className="w-6 h-6" />
           <span className="hidden sm:inline text-sm font-semibold">Login</span>
         </button>
 
         <button
           onClick={toggleCart}
-          className="relative p-2 hover:scale-110 transition-transform"
+          className="relative p-2 hover:scale-110 cursor-pointer transition-transform"
         >
           <ShoppingBag className="w-6 h-6" />
           {totalItems > 0 && (
@@ -87,13 +91,23 @@ const Navbar = () => {
         {["Home", "Phones", "About", "Contact"].map((link) => (
           <Link
             key={link}
-            to={link === "Home" ? "/Gadget-Store" : "#"}
+            to={link === "Home" ? "/" : "#"}
             className="text-2xl font-bold"
             onClick={() => setIsMenuOpen(false)}
           >
             {link}
           </Link>
         ))}
+        <button
+          onClick={() => {
+            setIsMenuOpen(false);
+            navigate("/login");
+          }}
+          className="flex items-center gap-2 text-2xl font-bold text-brand-orange mt-4"
+        >
+          <User className="w-7 h-7" />
+          <span>Login</span>
+        </button>
       </div>
     </nav>
   );

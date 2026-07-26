@@ -32,7 +32,7 @@ const CartDrawer = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[60]"
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-60"
             onClick={toggleCart}
           />
         )}
@@ -40,7 +40,7 @@ const CartDrawer = () => {
 
       {/* Drawer Container */}
       <div
-        className={`fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white shadow-2xl z-[70] transform transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 right-0 h-full w-full sm:w-105 bg-white shadow-2xl z-70 transform transition-transform duration-300 ease-in-out ${
           isCartOpen ? "translate-x-0" : "translate-x-full"
         } flex flex-col`}
       >
@@ -81,7 +81,7 @@ const CartDrawer = () => {
               <h3 className="text-xl font-bold text-slate-800 mb-2">
                 Your cart is empty
               </h3>
-              <p className="text-sm text-slate-400 max-w-[280px] mb-8 leading-relaxed">
+              <p className="text-sm text-slate-400 max-w-70 mb-8 leading-relaxed">
                 Looks like you haven't added anything yet. Let's find some
                 amazing tech.
               </p>
@@ -108,7 +108,7 @@ const CartDrawer = () => {
                     className="flex gap-3 p-3 rounded-2xl border border-slate-100 hover:border-slate-200 hover:bg-slate-50/50 transition-colors"
                   >
                     {/* Product Thumb */}
-                    <div className="w-20 h-20 bg-slate-50 rounded-xl flex-shrink-0 border border-slate-100 overflow-hidden flex items-center justify-center">
+                    <div className="w-20 h-20 bg-slate-50 rounded-xl shrink-0 border border-slate-100 overflow-hidden flex items-center justify-center">
                       {item.img ? (
                         <img
                           src={item.img}
@@ -133,7 +133,7 @@ const CartDrawer = () => {
                         </div>
                         <button
                           onClick={() => removeFromCart(item.id)}
-                          className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
+                          className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors shrink-0"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>

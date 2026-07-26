@@ -213,7 +213,7 @@ const Hero = () => {
       </button>
 
       {/* Indicator Dots */}
-      <div className="absolute bottom-6 md:bottom-8 left-0 right-0 flex justify-center gap-2 z-20">
+      <div className="absolute bottom-2 md:bottom-8 left-0 right-0 flex justify-center gap-2 z-20">
         {topProducts.map((_, idx) => (
           <button
             key={idx}
