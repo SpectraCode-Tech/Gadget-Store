@@ -322,12 +322,9 @@ const ProductDetails = ({ product }) => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={handleAddToCart}
-                  className="px-4 py-3 border-2 border-brand-black text-brand-black rounded-full font-bold hover:bg-slate-50 transition-all active:scale-[0.99] cursor-pointer"
+                  className="px-6 py-3 bg-brand-orange text-white rounded-full font-bold hover:bg-orange-600 shadow-md hover:shadow-lg transition-all active:scale-[0.99] cursor-pointer"
                 >
                   Add to Cart
-                </button>
-                <button className="px-6 py-3 bg-brand-orange text-white rounded-full font-bold hover:bg-orange-600 shadow-md hover:shadow-lg transition-all active:scale-[0.99] cursor-pointer">
-                  Buy Now
                 </button>
               </div>
             </div>
