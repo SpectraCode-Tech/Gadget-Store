@@ -9,6 +9,7 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Check,
 } from "lucide-react";
 import { useCart } from "../Components/CartContext";
 import mainImg from "../assets/slide1.jpeg";
@@ -25,41 +26,51 @@ const ProductDetails = ({ product }) => {
   const [activeImage, setActiveImage] = useState(0);
   const [showLightbox, setShowLightbox] = useState(false);
 
+  // Color selection state
+  const colors = [
+    { name: "Obsidian Black", hex: "#1e293b" },
+    { name: "Pure White", hex: "#f8fafc", border: "#cbd5e1" },
+    { name: "Brand Orange", hex: "#f97316" },
+  ];
+  const [selectedColor, setSelectedColor] = useState(colors[0]);
+
   const images = product?.images || [mainImg, altImg1, altImg2, altImg3];
 
-const item = product || {
-  name: "Liberty Buds Wireless Semi-in-ear Earbuds With Anc",
-  price: 150000,
-  oldPrice: 320000,
-  desc: "Experience the ultimate performance with advanced ANC and ergonomic design.",
-  fullDescription:
-    "The semi-in-ear fit with detachable ear fins provides a secure, pressure-free experience, reducing pressure and heat build-up in the ear compared to traditional in-ear designs. Real-time Adaptive ANC automatically adjusts noise cancellation modes by monitoring your surroundings for traffic, voices, and wind. Features Immersive Spatial Audio for rich 3D sound, AI-powered 4-mic noise reduction for clear calls, and real-time face-to-face AI translation via the soundcore app.",
-  productCode: "7016875",
-  brand: "Anker",
-  specs: {
-    drivers: "11 mm Dynamic Drivers",
-    playtime:
-      "Up to 7 hours single charge / 30 hours total with case (ANC off)",
-    playtimeAncOn: "Up to 6 hours single charge / 26 hours total with case",
-    fastCharging: "10 mins charge = 4 hours playtime",
-    bluetoothVersion: "6.1",
-    audioCodecs: "LDAC, AAC",
-    noiseCancellation: "Adaptive ANC 3.0",
-    microphoneArray: "4 mics with AI noise reduction",
-    waterResistance: "IP55 sweat and water-resistant",
-    customizedEq: "HearID 4.0",
-    multipointConnection: true,
-    earFins: "Includes 4 interchangeable sizes",
-  },
-};
-
+  const item = product || {
+    name: "Liberty Buds Wireless Semi-in-ear Earbuds With Anc",
+    price: 150000,
+    oldPrice: 320000,
+    desc: "Experience the ultimate performance with advanced ANC and ergonomic design.",
+    fullDescription:
+      "The semi-in-ear fit with detachable ear fins provides a secure, pressure-free experience, reducing pressure and heat build-up in the ear compared to traditional in-ear designs. Real-time Adaptive ANC automatically adjusts noise cancellation modes by monitoring your surroundings for traffic, voices, and wind. Features Immersive Spatial Audio for rich 3D sound, AI-powered 4-mic noise reduction for clear calls, and real-time face-to-face AI translation via the soundcore app.",
+    productCode: "7016875",
+    brand: "Anker",
+    specs: {
+      drivers: "11 mm Dynamic Drivers",
+      playtime:
+        "Up to 7 hours single charge / 30 hours total with case (ANC off)",
+      playtimeAncOn: "Up to 6 hours single charge / 26 hours total with case",
+      fastCharging: "10 mins charge = 4 hours playtime",
+      bluetoothVersion: "6.1",
+      audioCodecs: "LDAC, AAC",
+      noiseCancellation: "Adaptive ANC 3.0",
+      microphoneArray: "4 mics with AI noise reduction",
+      waterResistance: "IP55 sweat and water-resistant",
+      customizedEq: "HearID 4.0",
+      multipointConnection: true,
+      earFins: "Includes 4 interchangeable sizes",
+    },
+  };
 
   const discountPercent = item.oldPrice
     ? Math.round(((item.oldPrice - item.price) / item.oldPrice) * 100)
     : 0;
 
   const handleAddToCart = () => {
-    addToCart({ ...item, img: images[0] }, qty);
+    addToCart(
+      { ...item, img: images[0], selectedColor: selectedColor.name },
+      qty,
+    );
   };
 
   return (
@@ -204,7 +215,7 @@ const item = product || {
 
           {/* Right: Info Section */}
           <div className="flex flex-col">
-            <h1 className="text-3xl md:text-4xl font-bold text-brand-black mb-2 leading-tight">
+            <h1 className="text-2xl md:text-3xl font-bold text-brand-black mb-2 leading-tight">
               {item.name}
             </h1>
 
@@ -221,6 +232,51 @@ const item = product || {
                   {item.brand}
                 </span>
               </p>
+            </div>
+
+            {/* Color Picking Circles */}
+            <div className="mb-6">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-sm font-bold text-brand-black">
+                  Color:
+                </span>
+                <span className="text-sm font-medium text-slate-600">
+                  {selectedColor.name}
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                {colors.map((color) => {
+                  const isSelected = selectedColor.name === color.name;
+                  return (
+                    <button
+                      key={color.name}
+                      onClick={() => setSelectedColor(color)}
+                      style={{ backgroundColor: color.hex }}
+                      className={`w-8 h-8 rounded-full transition-all relative flex items-center justify-center shadow-sm cursor-pointer ${
+                        color.border
+                          ? `border border-[${color.border}]`
+                          : "border border-black/10"
+                      } ${
+                        isSelected
+                          ? "ring-2 ring-brand-orange ring-offset-2 scale-110"
+                          : "hover:scale-105"
+                      }`}
+                      title={color.name}
+                    >
+                      {isSelected && (
+                        <Check
+                          size={14}
+                          className={
+                            color.hex === "#f8fafc"
+                              ? "text-slate-800"
+                              : "text-white"
+                          }
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="flex items-center flex-wrap gap-3 mb-8 pb-6 border-b border-slate-100">
@@ -246,7 +302,7 @@ const item = product || {
                 </span>
                 <div className="flex items-center bg-slate-50 rounded-full border border-slate-200 p-1">
                   <button
-                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white transition-colors font-bold text-sm text-slate-600 shadow-sm"
+                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white transition-colors font-bold text-sm text-slate-600 shadow-sm cursor-pointer"
                     onClick={() => setQty(Math.max(1, qty - 1))}
                   >
                     -
@@ -255,7 +311,7 @@ const item = product || {
                     {qty}
                   </span>
                   <button
-                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white transition-colors font-bold text-sm text-slate-600 shadow-sm"
+                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white transition-colors font-bold text-sm text-slate-600 shadow-sm cursor-pointer"
                     onClick={() => setQty(qty + 1)}
                   >
                     +
@@ -266,11 +322,11 @@ const item = product || {
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 py-4 border-2 border-brand-black text-brand-black rounded-full font-bold hover:bg-slate-50 transition-all active:scale-[0.99]"
+                  className="px-4 py-3 border-2 border-brand-black text-brand-black rounded-full font-bold hover:bg-slate-50 transition-all active:scale-[0.99] cursor-pointer"
                 >
                   Add to Cart
                 </button>
-                <button className="flex-1 py-4 bg-brand-orange text-white rounded-full font-bold hover:bg-orange-600 shadow-md hover:shadow-lg transition-all active:scale-[0.99]">
+                <button className="px-6 py-3 bg-brand-orange text-white rounded-full font-bold hover:bg-orange-600 shadow-md hover:shadow-lg transition-all active:scale-[0.99] cursor-pointer">
                   Buy Now
                 </button>
               </div>
