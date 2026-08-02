@@ -7,6 +7,7 @@ import CartDrawer from "./Components/CartDrawer";
 import Register from "./Pages/Register";
 import Checkout from "./Pages/Checkout";
 import Profile from "./Pages/Profile";
+import AdminDashboard from "./Admin/AdminDashboard";
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
           <Route path="/signup" element={<Register />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
 
         <CartDrawer />
