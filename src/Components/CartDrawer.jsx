@@ -11,6 +11,7 @@ import {
   ArrowRight,
   ImageOff,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const CartDrawer = () => {
   const {
@@ -187,10 +188,10 @@ const CartDrawer = () => {
               </span>
             </div>
 
-            <button className="w-full flex items-center justify-center gap-2 bg-brand-orange hover:bg-orange-600 text-white py-4 rounded-xl font-bold transition-all duration-200 shadow-lg shadow-orange-100 active:scale-[0.99]">
+            <Link to="/checkout" className="w-full flex items-center justify-center gap-2 bg-brand-orange hover:bg-orange-600 text-white py-4 rounded-xl font-bold transition-all duration-200 shadow-lg shadow-orange-100 active:scale-[0.99]">
               <ShoppingBag className="w-4 h-4" />
               Proceed to Checkout
-            </button>
+            </Link>
           </div>
         )}
       </div>

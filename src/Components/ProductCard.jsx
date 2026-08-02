@@ -15,6 +15,12 @@ const ProductCard = ({ product }) => {
   const basePrice = product.price || 0;
   const calculatedOldPrice = basePrice + (product.discount || 0);
 
+  // NEW: Calculate the real math markdown discount percent on the fly
+  const discountPercent =
+    product.discount > 0 && calculatedOldPrice > 0
+      ? Math.round((product.discount / calculatedOldPrice) * 100)
+      : 0;
+
   // If your backend colors array is populated, map them directly. Otherwise, fall back to default Tailwind tags.
   const visualColors =
     product.colors && product.colors.length > 0
@@ -30,12 +36,20 @@ const ProductCard = ({ product }) => {
   return (
     <div className="w-full bg-white p-4 border-r border-b border-slate-200 hover:bg-slate-50 transition-colors flex flex-col">
       <Link to={`/product/${productId}`} className="block flex-1">
-        <div className="w-full aspect-square bg-slate-100 rounded-lg mb-4 overflow-hidden">
+        {/* IMAGE CONTAINER CONTAINER WRAPPED WITH RELATIVE PARAMETERS */}
+        <div className="relative w-full aspect-square bg-slate-100 rounded-lg mb-4 overflow-hidden group">
           <img
             src={imageSource}
             alt={product.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
+
+          {/* DYNAMIC TOP-LEFT DISCOUNT BADGE OVERLAY */}
+          {discountPercent > 0 && (
+            <span className="absolute top-2 left-2 bg-brand-orange text-white text-[10px] md:text-xs font-black px-2 py-1 rounded-full shadow-sm z-10 animate-fade-in">
+              -{discountPercent}%
+            </span>
+          )}
         </div>
 
         <h3 className="font-bold text-brand-black text-base mb-2 truncate">
@@ -61,6 +75,7 @@ const ProductCard = ({ product }) => {
           return (
             <button
               key={idx}
+              disabled
               style={!isClassName ? { backgroundColor: color } : {}}
               className={`w-5 h-5 md:w-6 md:h-6 rounded-full ${isClassName ? color : ""} border-2 border-white ring-1 ring-slate-200`}
             />
@@ -96,7 +111,7 @@ const ProductCard = ({ product }) => {
         {/* Add to Cart Button */}
         <button
           onClick={() => addToCart(product, quantity)}
-          className="relative bg-brand-orange text-white p-2 md:p-3 rounded-full hover:bg-orange-600 transition shadow-sm"
+          className="relative cursor-pointer bg-brand-orange text-white p-2 md:p-3 rounded-full hover:bg-orange-600 transition shadow-sm"
         >
           <ShoppingBag className="w-4 h-4 md:w-5 md:h-5" />
           <Plus className="w-2.5 h-2.5 md:w-3 md:h-3 absolute top-1.5 right-1 md:top-2 md:right-1.5 bg-brand-orange rounded-full" />

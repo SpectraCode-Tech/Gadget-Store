@@ -5,6 +5,8 @@ import ProductDetails from "./Pages/ProductDetails";
 import Login from "./Pages/Login";
 import CartDrawer from "./Components/CartDrawer";
 import Register from "./Pages/Register";
+import Checkout from "./Pages/Checkout";
+import Profile from "./Pages/Profile";
 
 const App = () => {
   return (
@@ -15,6 +17,8 @@ const App = () => {
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Register />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
 
         <CartDrawer />

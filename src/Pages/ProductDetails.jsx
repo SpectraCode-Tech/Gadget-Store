@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Check,
   AlertCircle,
+  Loader2,
 } from "lucide-react";
 import productPlaceholder from "../assets/slide1.jpeg";
 
@@ -54,7 +55,7 @@ const ProductDetails = () => {
       })
       .catch((err) => {
         console.error("Failed fetching item specifications:", err);
-        setError("Could not resolve product technical specifications.");
+        setError("Could not find specifications.");
         setLoading(false);
       });
   }, [id]);
@@ -62,7 +63,7 @@ const ProductDetails = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-slate-500 font-medium">
-        Assembling product specifications matrix...
+        <Loader2 size={30} className="animate-spin text-brand-orange" />
       </div>
     );
   }
@@ -71,12 +72,12 @@ const ProductDetails = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-red-500 font-medium gap-3">
         <AlertCircle className="w-8 h-8" />
-        <p>{error || "Product configurations not found."}</p>
+        <p>{error || "Product not found."}</p>
         <Link
           to="/"
           className="text-sm text-brand-orange font-bold hover:underline"
         >
-          Return to store home
+          Return to store
         </Link>
       </div>
     );
@@ -111,6 +112,7 @@ const ProductDetails = () => {
   return (
     <div className="bg-white min-h-screen">
       <Navbar />
+      {/* <Link to="/">Home</Link> {">"} <span className="text-brand-black font-semibold">{item.category}</span> */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         {/* LIGHTBOX MODAL OVERLAY */}
         <AnimatePresence>
@@ -119,7 +121,7 @@ const ProductDetails = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center p-4"
+              className="fixed inset-0 z-100 bg-black/90 flex flex-col items-center justify-center p-4"
             >
               <button
                 onClick={() => setShowLightbox(false)}
@@ -205,7 +207,7 @@ const ProductDetails = () => {
 
               {discountPercent > 0 && (
                 <span className="absolute top-4 left-4 bg-brand-orange text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
-                  -{discountPercent}% OFF
+                  -{discountPercent}%
                 </span>
               )}
 
@@ -265,38 +267,32 @@ const ProductDetails = () => {
                 </span>
               </p>
               <p>
-                Brand Vendor:{" "}
+                Brand:{" "}
                 <span className="text-brand-black font-semibold">
                   {item.brand}
                 </span>
               </p>
               <p>
-                Category Catalog:{" "}
-                <span className="text-brand-black font-semibold uppercase text-xs">
-                  {item.category}
-                </span>
-              </p>
-              <p>
-                Condition State:{" "}
+                Condition:{" "}
                 <span className="text-brand-black font-semibold uppercase text-xs">
                   {item.condition}
                 </span>
               </p>
               <p>
-                Warehouse Inventory:{" "}
+                Units:{" "}
                 <span
                   className={`font-bold ${
                     item.stock > 0 ? "text-emerald-600" : "text-red-500"
                   }`}
                 >
-                  {item.stock > 0 ? `${item.stock} Units Left` : "Out of stock"}
+                  {item.stock > 0 ? `${item.stock}` : "Out of stock"}
                 </span>
               </p>
             </div>
 
             {/* Pricing Section blocks */}
             <div className="flex items-baseline gap-3 mb-6">
-              <span className="text-2xl md:text-3xl font-extrabold text-brand-blue">
+              <span className="text-2xl md:text-3xl font-extrabold text-brand-orange">
                 ₦{basePrice.toLocaleString()}
               </span>
               {item.discount > 0 && (
