@@ -37,7 +37,7 @@ const ProductDetails = ({ product }) => {
   const images = product?.images || [mainImg, altImg1, altImg2, altImg3];
 
   const item = product || {
-    name: "Liberty Buds Wireless Semi-in-ear Earbuds With Anc",
+    name: "Apple Iphone 15 Pro 256gb ROM 16gb RAM",
     price: 150000,
     oldPrice: 320000,
     desc: "Experience the ultimate performance with advanced ANC and ergonomic design.",
