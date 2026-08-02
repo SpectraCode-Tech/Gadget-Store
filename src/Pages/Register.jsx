@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  User,
   Mail,
   Lock,
+  User,
   ArrowRight,
   ArrowLeft,
+  Home,
+  Phone,
+  AlertCircle,
   Check,
   X,
   Eye,
   EyeOff,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Register = () => {
   const [step, setStep] = useState(1);
@@ -19,13 +23,20 @@ const Register = () => {
     firstName: "",
     lastName: "",
     email: "",
-    gender: "",
+    phone: "",
+    street: "",
+    city: "",
+    state: "",
     password: "",
     confirmPassword: "",
   });
+
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -33,22 +44,74 @@ const Register = () => {
 
   const handleNext = (e) => {
     e.preventDefault();
-    if (step === 1 && (!formData.firstName || !formData.lastName)) return;
-    if (step === 2 && (!formData.email || !formData.gender)) return;
+    setErrorMessage("");
+
+    if (step === 1 && (!formData.firstName || !formData.lastName)) {
+      setErrorMessage("Please enter both your first and last name.");
+      return;
+    }
+    if (step === 2 && (!formData.email || !formData.phone)) {
+      setErrorMessage("Please enter both your email and phone number.");
+      return;
+    }
+    if (
+      step === 3 &&
+      (!formData.street ||
+        !formData.city ||
+        !formData.state)
+    ) {
+      setErrorMessage("Please complete all address fields.");
+      return;
+    }
+
     setStep((prev) => prev + 1);
   };
 
   const handlePrev = () => {
+    setErrorMessage("");
     setStep((prev) => prev - 1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) return;
+    setErrorMessage("");
+
+    if (formData.password !== formData.confirmPassword) {
+      setErrorMessage("Passwords do not match.");
+      return;
+    }
+
     setIsLoading(true);
-    setTimeout(() => {
+
+    const registrationPayload = {
+      firstName: formData.firstName.trim(),
+      lastName: formData.lastName.trim(),
+      email: formData.email.trim(),
+      phone: formData.phone.trim(),
+      password: formData.password,
+      address: {
+        street: formData.street.trim(),
+        city: formData.city.trim(),
+        state: formData.state.trim(),
+      },
+    };
+
+    try {
+      await axios.post(
+        "http://localhost:5000/auth/register",
+        registrationPayload,
+      );
+      alert("Registration successful! Redirecting to login desk...");
+      navigate("/login");
+    } catch (error) {
+      console.error("Registration endpoint error:", error);
+      setErrorMessage(
+        error.response?.data?.message ||
+          "Server configuration error occurred. Please try again.",
+      );
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const passwordsMatch =
@@ -76,15 +139,24 @@ const Register = () => {
               Create Account
             </h1>
             <p className="text-xs font-semibold text-center text-slate-400 uppercase tracking-wider">
-              Step {step} of 3
+              Step {step} of 4
             </p>
           </div>
 
+          {/* Real-time Server Error Warnings Container */}
+          {errorMessage && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-sm text-red-600 text-xs flex items-start gap-2">
+              <AlertCircle size={16} className="shrink-0 mt-0.5" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
           <form
-            onSubmit={step === 3 ? handleSubmit : handleNext}
+            onSubmit={step === 4 ? handleSubmit : handleNext}
             className="space-y-4"
           >
             <AnimatePresence mode="wait">
+              {/* STEP 1: Core Profile Info */}
               {step === 1 && (
                 <motion.div
                   key="step1"
@@ -152,6 +224,7 @@ const Register = () => {
                 </motion.div>
               )}
 
+              {/* STEP 2: Contact Information (Email & Phone) */}
               {step === 2 && (
                 <motion.div
                   key="step2"
@@ -187,43 +260,40 @@ const Register = () => {
 
                   <div className="space-y-1.5">
                     <label
-                      htmlFor="gender"
+                      htmlFor="phone"
                       className="text-xs font-semibold text-slate-700"
                     >
-                      Gender
+                      Phone Number
                     </label>
-                    <select
-                      id="gender"
-                      name="gender"
-                      required
-                      value={formData.gender}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-sm text-brand-black text-sm focus:outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all shadow-sm"
-                    >
-                      <option value="" disabled>
-                        Select Gender
-                      </option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                      <option value="prefer-not-to-say">
-                        Prefer not to say
-                      </option>
-                    </select>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <Phone size={16} />
+                      </span>
+                      <input
+                        id="phone"
+                        name="phone"
+                        type="text"
+                        required
+                        value={formData.phone}
+                        onChange={handleChange}
+                        placeholder="08012345678"
+                        className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-sm text-brand-black placeholder:text-slate-400 text-sm focus:outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all shadow-sm"
+                      />
+                    </div>
                   </div>
 
-                  <div className="flex gap-2 mt-2">
+                  <div className="flex gap-2 pt-2">
                     <button
                       type="button"
                       onClick={handlePrev}
-                      className="w-1/3 py-3 cursor-pointer border border-slate-200 bg-white text-slate-700 rounded-sm font-semibold hover:bg-slate-50 transition-all flex items-center justify-center gap-2 shadow-sm"
+                      className="w-1/3 py-3 cursor-pointer border border-slate-200 bg-white text-slate-700 rounded-sm font-semibold hover:bg-slate-50 transition-all flex items-center justify-center gap-2 text-sm shadow-sm"
                     >
                       <ArrowLeft size={16} />
                       <span>Back</span>
                     </button>
                     <button
                       type="submit"
-                      className="w-2/3 py-3 cursor-pointer bg-brand-orange text-white rounded-sm font-semibold hover:bg-orange-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand-orange/25 active:scale-[0.99]"
+                      className="w-2/3 py-3 cursor-pointer bg-brand-orange text-white rounded-sm font-semibold hover:bg-orange-600 transition-all flex items-center justify-center gap-2 text-sm shadow-md shadow-brand-orange/20"
                     >
                       <span>Next</span>
                       <ArrowRight size={16} />
@@ -232,9 +302,103 @@ const Register = () => {
                 </motion.div>
               )}
 
+              {/* STEP 3: Shipping Address */}
               {step === 3 && (
                 <motion.div
                   key="step3"
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="space-y-3"
+                >
+                  <div className="space-y-1">
+                    <label
+                      htmlFor="street"
+                      className="text-[11px] font-semibold text-slate-700"
+                    >
+                      Street Address
+                    </label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+                        <Home size={14} />
+                      </span>
+                      <input
+                        id="street"
+                        name="street"
+                        type="text"
+                        required
+                        value={formData.street}
+                        onChange={handleChange}
+                        placeholder="123 Main St"
+                        className="w-full pl-8 pr-2 py-2.5 bg-white border border-slate-200 rounded-sm text-brand-black placeholder:text-slate-400 text-sm focus:outline-none focus:border-brand-orange transition-all shadow-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <label
+                        htmlFor="city"
+                        className="text-[11px] font-semibold text-slate-700"
+                      >
+                        City
+                      </label>
+                      <input
+                        id="city"
+                        name="city"
+                        type="text"
+                        required
+                        value={formData.city}
+                        onChange={handleChange}
+                        placeholder="City"
+                        className="w-full px-2 py-2.5 bg-white border border-slate-200 rounded-sm text-brand-black placeholder:text-slate-400 text-sm focus:outline-none focus:border-brand-orange transition-all shadow-sm"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label
+                        htmlFor="state"
+                        className="text-[11px] font-semibold text-slate-700"
+                      >
+                        State
+                      </label>
+                      <input
+                        id="state"
+                        name="state"
+                        type="text"
+                        required
+                        value={formData.state}
+                        onChange={handleChange}
+                        placeholder="State"
+                        className="w-full px-2 py-2.5 bg-white border border-slate-200 rounded-sm text-brand-black placeholder:text-slate-400 text-sm focus:outline-none focus:border-brand-orange transition-all shadow-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={handlePrev}
+                      className="w-1/3 py-2.5 cursor-pointer border border-slate-200 bg-white text-slate-700 rounded-sm font-semibold hover:bg-slate-50 transition-all flex items-center justify-center gap-1.5 text-sm shadow-sm"
+                    >
+                      <ArrowLeft size={14} />
+                      <span>Back</span>
+                    </button>
+                    <button
+                      type="submit"
+                      className="w-2/3 py-2.5 cursor-pointer bg-brand-orange text-white rounded-sm font-semibold hover:bg-orange-600 transition-all flex items-center justify-center gap-1.5 text-sm shadow-md shadow-brand-orange/20"
+                    >
+                      <span>Next</span>
+                      <ArrowRight size={14} />
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* STEP 4: Passwords & Action Submits */}
+              {step === 4 && (
+                <motion.div
+                  key="step4"
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -10 }}
@@ -259,13 +423,13 @@ const Register = () => {
                         required
                         value={formData.password}
                         onChange={handleChange}
-                        placeholder="Enter Password"
+                        placeholder="Minimum 6 characters"
                         className="w-full pl-10 pr-10 py-3 bg-white border border-slate-200 rounded-sm text-brand-black placeholder:text-slate-400 text-sm focus:outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all shadow-sm"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+                        className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
                       >
                         {showPassword ? (
                           <EyeOff size={16} />
@@ -294,7 +458,7 @@ const Register = () => {
                         required
                         value={formData.confirmPassword}
                         onChange={handleChange}
-                        placeholder="Confirm Password"
+                        placeholder="Re-enter password"
                         className="w-full pl-10 pr-16 py-3 bg-white border border-slate-200 rounded-sm text-brand-black placeholder:text-slate-400 text-sm focus:outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all shadow-sm"
                       />
                       <div className="absolute inset-y-0 right-0 pr-3 flex items-center gap-1.5">
@@ -329,7 +493,7 @@ const Register = () => {
                     )}
                   </div>
 
-                  <div className="flex gap-2 mt-2">
+                  <div className="flex gap-2 pt-2">
                     <button
                       type="button"
                       onClick={handlePrev}
@@ -344,9 +508,12 @@ const Register = () => {
                       className="w-2/3 py-3 cursor-pointer bg-brand-orange text-white rounded-sm font-semibold hover:bg-orange-600 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-brand-orange/25 active:scale-[0.99]"
                     >
                       {isLoading ? (
-                        <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       ) : (
-                        <span>Sign Up</span>
+                        <>
+                          <span>Sign Up</span>
+                          <ArrowRight size={16} />
+                        </>
                       )}
                     </button>
                   </div>
@@ -394,7 +561,7 @@ const Register = () => {
           </div>
         </div>
 
-        {/* Bottom Card Footer inside the wrapper */}
+        {/* Bottom Card Footer */}
         <div className="bg-slate-50/80 border-t border-slate-100 p-4 text-center">
           <p className="text-xs text-slate-500">
             Already have an account?{" "}

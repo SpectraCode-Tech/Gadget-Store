@@ -6,5 +6,4 @@ export default defineConfig({
     tailwindcss(),
     
   ],
-  base: '/Gadget-Store/'
 })

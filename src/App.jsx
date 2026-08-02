@@ -9,7 +9,7 @@ import Register from "./Pages/Register";
 const App = () => {
   return (
     <>
-      <BrowserRouter basename="/Gadget-Store">
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/product/:id" element={<ProductDetails />} />
